@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物业管理系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>物业管理系统</h1>
+            <nav>
+                <button onclick="showDashboard()" class="nav-btn active">仪表板</button>
+                <button onclick="showProperties()" class="nav-btn">房产管理</button>
+                <button onclick="showUnits()" class="nav-btn">单元管理</button>
+                <button onclick="showTenants()" class="nav-btn">租客管理</button>
+                <button onclick="showBills()" class="nav-btn">收费管理</button>
+                <button onclick="showPayments()" class="nav-btn">收款记录</button>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Dashboard -->
+            <div id="dashboard" class="tab-content">
+                <h2>系统概览</h2>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3>总房产数</h3>
+                        <p id="total-properties">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>总单元数</h3>
+                        <p id="total-units">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>租客数量</h3>
+                        <p id="total-tenants">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>本月收入</h3>
+                        <p id="monthly-revenue">¥0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>待收款项</h3>
+                        <p id="pending-bills">¥0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties Management -->
+            <div id="properties" class="tab-content" style="display: none;">
+                <div class="section-header">
+                    <h2>房产管理</h2>
+                    <button onclick="showAddPropertyModal()" class="btn btn-primary">添加房产</button>
+                </div>
+                <div class="table-container">
+                    <table id="properties-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>名称</th>
+                                <th>地址</th>
+                                <th>总单元数</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Units Management -->
+            <div id="units" class="tab-content" style="display: none;">
+                <div class="section-header">
+                    <h2>单元管理</h2>
+                    <button onclick="showAddUnitModal()" class="btn btn-primary">添加单元</button>
+                </div>
+                <div class="table-container">
+                    <table id="units-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>房产</th>
+                                <th>单元号</th>
+                                <th>租金</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tenants Management -->
+            <div id="tenants" class="tab-content" style="display: none;">
+                <div class="section-header">
+                    <h2>租客管理</h2>
+                    <button onclick="showAddTenantModal()" class="btn btn-primary">添加租客</button>
+                </div>
+                <div class="table-container">
+                    <table id="tenants-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>姓名</th>
+                                <th>单元号</th>
+                                <th>房产</th>
+                                <th>电话</th>
+                                <th>邮箱</th>
+                                <th>入住日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bills Management -->
+            <div id="bills" class="tab-content" style="display: none;">
+                <div class="section-header">
+                    <h2>收费管理</h2>
+                    <button onclick="showAddBillModal()" class="btn btn-primary">创建账单</button>
+                </div>
+                <div class="table-container">
+                    <table id="bills-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>租客</th>
+                                <th>单元号</th>
+                                <th>类型</th>
+                                <th>金额</th>
+                                <th>到期日</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payments Management -->
+            <div id="payments" class="tab-content" style="display: none;">
+                <div class="section-header">
+                    <h2>收款记录</h2>
+                    <button onclick="showAddPaymentModal()" class="btn btn-primary">登记收款</button>
+                </div>
+                <div class="table-container">
+                    <table id="payments-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>租客</th>
+                                <th>单元号</th>
+                                <th>账单类型</th>
+                                <th>金额</th>
+                                <th>收款日期</th>
+                                <th>支付方式</th>
+                                <th>交易号</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Property Modal -->
+    <div id="add-property-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-property-modal')">&times;</span>
+            <h3>添加房产</h3>
+            <form id="add-property-form">
+                <div class="form-group">
+                    <label>房产名称</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>地址</label>
+                    <input type="text" name="address" required>
+                </div>
+                <div class="form-group">
+                    <label>总单元数</label>
+                    <input type="number" name="total_units" required>
+                </div>
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Unit Modal -->
+    <div id="add-unit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-unit-modal')">&times;</span>
+            <h3>添加单元</h3>
+            <form id="add-unit-form">
+                <div class="form-group">
+                    <label>选择房产</label>
+                    <select name="property_id" required></select>
+                </div>
+                <div class="form-group">
+                    <label>单元号</label>
+                    <input type="text" name="unit_number" required>
+                </div>
+                <div class="form-group">
+                    <label>租金金额</label>
+                    <input type="number" name="rent_amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <select name="status">
+                        <option value="vacant">空置</option>
+                        <option value="occupied">已租</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Tenant Modal -->
+    <div id="add-tenant-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-tenant-modal')">&times;</span>
+            <h3>添加租客</h3>
+            <form id="add-tenant-form">
+                <div class="form-group">
+                    <label>选择单元</label>
+                    <select name="unit_id" required></select>
+                </div>
+                <div class="form-group">
+                    <label>姓名</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>电话</label>
+                    <input type="text" name="phone">
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label>入住日期</label>
+                    <input type="date" name="move_in_date" required>
+                </div>
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Bill Modal -->
+    <div id="add-bill-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-bill-modal')">&times;</span>
+            <h3>创建账单</h3>
+            <form id="add-bill-form">
+                <div class="form-group">
+                    <label>选择租客</label>
+                    <select name="tenant_id" required></select>
+                </div>
+                <div class="form-group">
+                    <label>账单类型</label>
+                    <select name="type">
+                        <option value="rent">房租</option>
+                        <option value="utilities">水电费</option>
+                        <option value="maintenance">维修费</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>金额</label>
+                    <input type="number" name="amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>到期日</label>
+                    <input type="date" name="due_date" required>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea name="description"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">创建</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Payment Modal -->
+    <div id="add-payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-payment-modal')">&times;</span>
+            <h3>登记收款</h3>
+            <form id="add-payment-form">
+                <div class="form-group">
+                    <label>选择租客</label>
+                    <select name="tenant_id" required onchange="loadPendingBills(this.value)"></select>
+                </div>
+                <div class="form-group">
+                    <label>选择账单</label>
+                    <select name="bill_id" required></select>
+                </div>
+                <div class="form-group">
+                    <label>金额</label>
+                    <input type="number" name="amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>收款日期</label>
+                    <input type="date" name="payment_date" required>
+                </div>
+                <div class="form-group">
+                    <label>支付方式</label>
+                    <select name="payment_method">
+                        <option value="cash">现金</option>
+                        <option value="bank">银行转账</option>
+                        <option value="wechat">微信支付</option>
+                        <option value="alipay">支付宝</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">登记</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
