@@ -14,7 +14,9 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 // Database setup
-const db = new sqlite3.Database('./property_management.db');
+// const db = new sqlite3.Database('./property_management.db');
+// temperary solution, not suitable for production
+const db = new sqlite3.Database('/tmp/property_management.db');
 
 // Initialize database tables
 db.serialize(() => {
